@@ -196,7 +196,7 @@ def bindingMember(indexPath):
     memberTag = str(memberList[indexPath]['Tag']['MemberTag'])
     subGroupTag = str(memberList[indexPath]['Tag']['SubGroupTag'])
 
-    #info = '選擇:'+ str(indexPath + 1) + '. ' + memberName #+ '\n' + memberTag + subGroupTag
+    info = '選擇:'+ str(indexPath + 1) + '. ' + memberName #+ '\n' + memberTag + subGroupTag
     line_bot_api.push_message(userID, TextSendMessage(text=memberName))
 
     bindingPayload = {"MeberID": indexPath,
@@ -316,7 +316,7 @@ def on_connect(client, userdata, flags, rc):
 
 def on_subscribe(client, userdata, mid, gqos):
     print("subscribed: "+ str(mid) + str(gqos))
-    line_bot_api.push_message(userID, TextSendMessage(text='等待公告訊息中'))
+    line_bot_api.push_message(userID, TextSendMessage(text='連線中'))
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
@@ -495,9 +495,9 @@ def handle_message(event):
         else:    
             sendMessage(msg)
             line_bot_api.push_message(userID, TextSendMessage(text='訊息已送:' + msg))
-
-        if msg == '離開':
-            client.disconnect
+            
+    if msg == '離開':
+        client.disconnect
 
 
 if __name__ == "__main__":
