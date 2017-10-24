@@ -56,11 +56,6 @@ def callback():
 
     return 'OK'
 
-@app.route('/GGWP', methods=['GET'])
-def test():
-    return "Hello World!"
-
-
 #Line
 userID = ''
 
