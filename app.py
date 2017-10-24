@@ -195,9 +195,9 @@ def bindingMember(indexPath):
     memberName = memberList[indexPath]['Name']
     memberTag = str(memberList[indexPath]['Tag']['MemberTag'])
     subGroupTag = str(memberList[indexPath]['Tag']['SubGroupTag'])
-
-    info = '選擇:'+ str(indexPath + 1) + '. ' + memberName #+ '\n' + memberTag + subGroupTag
-    line_bot_api.push_message(userID, TextSendMessage(text=memberName))
+    number = str(indexPath + 1)
+    info = '選擇:'+ number + '. ' + memberName #+ '\n' + memberTag + subGroupTag
+    line_bot_api.push_message(userID, TextSendMessage(text=info))
 
     bindingPayload = {"MeberID": indexPath,
                       "DeviceID": deviceId,
