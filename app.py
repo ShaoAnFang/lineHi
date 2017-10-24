@@ -460,7 +460,8 @@ def handle_message(event):
     userID = event.source.user_id
     #if event.source.group_id is not None:
     #    groupID = event.source.group_id
-    global didBinded            
+    global didBinded
+    global client
     if msg == '離開':
         didBinded = False
         client.disconnect
