@@ -15,12 +15,12 @@ import socket
 import paho.mqtt.client as mqtt
 from flask import Flask, request, abort
 
-from PIL import Image
-from io import BytesIO
-from PIL import Image, ImageTk
+# from PIL import Image
+# from io import BytesIO
+# from PIL import Image, ImageTk
 
-from azure.storage.blob import BlockBlobService
-from azure.storage.blob import ContentSettings
+# from azure.storage.blob import BlockBlobService
+# from azure.storage.blob import ContentSettings
 
 from linebot import (
     LineBotApi, WebhookHandler
