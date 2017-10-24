@@ -455,16 +455,17 @@ def handle_message(event):
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     global userID
+   
     msg = event.message.text
     userID = event.source.user_id
     #if event.source.group_id is not None:
     #    groupID = event.source.group_id
-                
+    global didBinded            
     if msg == '離開':
         didBinded = False
         client.disconnect
-    
-    global didBinded
+        
+        
     if not didBinded:
 
         if msg == '你好' or msg == '嗨':
