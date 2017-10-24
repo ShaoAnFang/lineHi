@@ -296,9 +296,9 @@ def sendIRS(i):
     global client
     client.publish(publishPayload,payload=formatString,qos=1,retain=True)        
     
-def upload():
+#def upload():
     #block_blob_service = BlockBlobService(account_name='myaccount', account_key='mykey')
-    block_blob_service = BlockBlobService(url=blobContainerSasUri)
+    #block_blob_service = BlockBlobService(url=blobContainerSasUri)
     #block_blob_service.create_container(blobContainerSasUri)
 
     # block_blob_service.create_blob_from_path(
