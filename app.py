@@ -458,7 +458,12 @@ def handle_message(event):
     msg = event.message.text
     userID = event.source.user_id
     #if event.source.group_id is not None:
-    #    groupID = event.source.group_id 
+    #    groupID = event.source.group_id
+                
+    if msg == '離開':
+        didBinded = False
+        client.disconnect
+    
     global didBinded
     if not didBinded:
 
@@ -495,9 +500,7 @@ def handle_message(event):
         else:    
             sendMessage(msg)
             line_bot_api.push_message(userID, TextSendMessage(text='訊息已送:' + msg))
-            
-    if msg == '離開':
-        client.disconnect
+
 
 
 if __name__ == "__main__":
