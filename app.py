@@ -464,7 +464,7 @@ def handle_message(event):
     global client
     if msg == '離開':
         didBinded = False
-        client.disconnect
+        client.disconnect()
         
         
     if not didBinded:
