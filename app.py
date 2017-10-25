@@ -1,17 +1,10 @@
 #!/usr/bin/env python3 
 # -*- coding: utf-8 -*-
 
-import re
-import time
-import datetime
-import pytz 
-import random
 import requests
 import json
-
 import ssl
 import uuid
-import socket
 import paho.mqtt.client as mqtt
 from flask import Flask, request, abort
 
