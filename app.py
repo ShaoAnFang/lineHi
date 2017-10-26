@@ -1,4 +1,3 @@
-#!/usr/bin/env python3 
 # -*- coding: utf-8 -*-
 
 import requests
@@ -22,31 +21,35 @@ from linebot.exceptions import (
     InvalidSignatureError
 )
 from linebot.models import *
-#from linebot.models import (
-#    MessageEvent, TextMessage, TextSendMessage,TemplateSendMessage
-#)
 
 app = Flask(__name__)
 token = 'wrQQUNqGLPRjzOmYj3Zw/vX2pntyFR+5ZU4r/9PhbtHLbyX8l0wsqkSimSDGPY2QtHguKJPOSPB3g9ExPW5lspInigwsRaoJl0p1RoEn3zLH4HcAiP9R807uTXt/oSsz2xKtF1VmHqMzDVH3Nm4jYwdB04t89/1O/w1cDnyilFU='
-line_bot_api = LineBotApi(token)
+line_bot_api = LineBotApi('wrQQUNqGLPRjzOmYj3Zw/vX2pntyFR+5ZU4r/9PhbtHLbyX8l0wsqkSimSDGPY2QtHguKJPOSPB3g9ExPW5lspInigwsRaoJl0p1RoEn3zLH4HcAiP9R807uTXt/oSsz2xKtF1VmHqMzDVH3Nm4jYwdB04t89/1O/w1cDnyilFU=')
 handler = WebhookHandler('4cd06a614a651ea406999c50f07c13ca')
 
+@app.route('/', methods=['GET'])
+def hello_world():
+    return 'Hello, World! ....'
+
+@app.route('/g', methods=['POST'])
+def g():
+    return 'g POST! ....'
 
 @app.route("/callback", methods=['POST'])
 def callback():
-    # get X-Line-Signature header value
+    # get X-Line-Signature header valueı
     signature = request.headers['X-Line-Signature']
-
+    
     # get request body as text
     body = request.get_data(as_text=True)
     app.logger.info("Request body: " + body)
-
+    
     # handle webhook body
     try:
         handler.handle(body, signature)
     except InvalidSignatureError:
         abort(400)
-
+    
     return 'OK'
 
 #Line
@@ -117,11 +120,11 @@ def joinGroup(token):
     global groupNum
     
     print('groupNum :' + groupNum)
-    joinBody = {'jsonrpc': '2.0', 
-                'id': '2',
-                'method':'JoinGroup',
+    joinBody = {'jsonrpc': '2.0',
+        'id': '2',
+            'method':'JoinGroup',
                 'params':{'deviceId': deviceId ,'groupNum': groupNum}
-                }
+            }
     header = {'Authorization': token}
     joinRes = requests.post(url, json = joinBody, headers = header)
     
@@ -132,15 +135,15 @@ def joinGroup(token):
         line_bot_api.push_message(userID, TextSendMessage(text='GG惹 ' + err))
     
     else:
-        global blobContainerSasUri   
+        global blobContainerSasUri
         blobContainerSasUri = joinRes.json()['result']['blobContainerSasUri']
-
+        
         mqttG = joinRes.json()['result']['mqtt']
         #print(mqttG)
-        global brokerHostName 
-        global MQTTclientID 
-        global username  
-        global password 
+        global brokerHostName
+        global MQTTclientID
+        global username
+        global password
         global sendMsg
         global patchTwin
         global receiveMsg
@@ -154,20 +157,20 @@ def joinGroup(token):
         patchTwin = mqttG['publishTopic']['patchTwin']
         receiveMsg = mqttG['subscribeTopic']['receiveMsg']
         mqttConnect()
-    #print brokerHostName+'\n'+MQTTclientID+'\n'+username+'\n'+password+'\n'+receiveMsg
+#print brokerHostName+'\n'+MQTTclientID+'\n'+username+'\n'+password+'\n'+receiveMsg
 
 def pinCodeCheck(pinCodeEntry):
     
     if pinCodeEntry == '80650390' or pinCodeEntry == pinCode :
-        line_bot_api.push_message(userID, TextSendMessage(text='驗證成功'))
         selectStudent(memberList)
+        line_bot_api.push_message(userID, TextSendMessage(text='驗證成功'))
     else:
         line_bot_api.push_message(userID, TextSendMessage(text='驗證失敗'))
 
 def selectStudent(memberList):
-
+    
     studentString = ''
-
+    
     for member in memberList:
         #print( str(member['MemberID'])+ '. ' + member['Name'])
         item = str(member['MemberID']) + '. ' + member['Name']
@@ -184,25 +187,25 @@ def bindingMember(indexPath):
     global memberTag
     global subGroupTag
     global memberName
-
+    
     memberName = memberList[indexPath]['Name']
     memberTag = str(memberList[indexPath]['Tag']['MemberTag'])
     subGroupTag = str(memberList[indexPath]['Tag']['SubGroupTag'])
     number = str(indexPath + 1)
     info = '選擇:'+ number + '. ' + memberName #+ '\n' + memberTag + subGroupTag
     line_bot_api.push_message(userID, TextSendMessage(text=info))
-
+    
     bindingPayload = {"MeberID": indexPath,
-                      "DeviceID": deviceId,
-                      "Password": None, 
-                      "GroupAPI-Version": 1.0}
+        "DeviceID": deviceId,
+            "Password": None,
+                "GroupAPI-Version": 1.0}
     #print(bindingPayload)
     timeInterval = int(time.time())
     binding = {"Action": "MemberBinding",
-               "Sender": memberTag, #member.tag.memberTag
-               "Timestamp": timeInterval, 
-               "payload": bindingPayload
-              }
+        "Sender": memberTag, #member.tag.memberTag
+            "Timestamp": timeInterval,
+                "payload": bindingPayload
+                }
     publishPayload = sendMsg + '&$.to={"DeviceID":' + '"{}"'.format(hostID) + '}'
     
     #print('publishPayload: ' + publishPayload)
@@ -217,9 +220,9 @@ def sendMqttRequestForTagUpdate():
     global memberTag
     global subGroupTag
     format = {'local': socket.gethostbyname(socket.gethostname()) ,
-              'GroupTag': groupTag,
-              'SubGroupTag': subGroupTag,
-              'MemberTag': memberTag}
+        'GroupTag': groupTag,
+            'SubGroupTag': subGroupTag,
+                'MemberTag': memberTag}
     formatString = json.dumps(format)
     global client
     global patchTwin
@@ -233,32 +236,32 @@ def sendMqttRegistSuccess(registState = True):
         action = "RegisterSuccess"
     else:
         action = "RegisterFail"
-    
+
     global memberTag
     timestamp = int(time.time())
-    format = {"Action": action, 
-              "Payload": None, 
-              "Sender": memberTag, 
-              "Timestamp" : timestamp }
+    format = {"Action": action,
+        "Payload": None,
+            "Sender": memberTag,
+                "Timestamp" : timestamp }
     formatString = json.dumps(format)
     publishPayload = sendMsg + '&$.to={"DeviceID":' + '"{}"'.format(hostID) + '}'
-    
+
     print('sendMqttRegistSuccess')
     print(formatString)
     print(publishPayload)
-    
+
     global client
     client.publish(publishPayload,payload=formatString,qos=1,retain=True)
-    
+
 def sendMessage(message):
     global memberTag
     timestamp = str(int(time.time()))
-
+    
     messageFormat = {"Action":"Message",
-                     "Sender":memberTag,
-                    "Timestamp": timestamp,
-                    "Payload": {"Text": message}
-                    }
+        "Sender":memberTag,
+            "Timestamp": timestamp,
+                "Payload": {"Text": message}
+                }
     formatString = json.dumps(messageFormat)
     publishPayload = sendMsg + '&$.to={"DeviceID":' + '"{}"'.format(hostID) + '}'
     global client
@@ -271,41 +274,41 @@ def sendIRS(i):
     #IRS 1~9是Send 0~8, 0是Send -1
     irsAns.append(int(i) - 1)
     irsSendingFormat = {
-                        "Action":"IRS.Answer", 
-                        "Sender":memberTag, 
-                        "Timestamp":timeInterval, 
-                        "Payload":{"Answer":irsAns}
-                        }
+        "Action":"IRS.Answer",
+            "Sender":memberTag,
+                "Timestamp":timeInterval,
+                    "Payload":{"Answer":irsAns}
+                    }
     formatString = json.dumps(irsSendingFormat)
     publishPayload = sendMsg + '&$.to={"DeviceID":' + '"{}"'.format(hostID) + '}'
     # print('send IRS Success')
     # print(formatString)
     # print(publishPayload)
     global client
-    client.publish(publishPayload,payload=formatString,qos=1,retain=True)        
-    
+    client.publish(publishPayload,payload=formatString,qos=1,retain=True)
+
 #def upload():
-    #block_blob_service = BlockBlobService(account_name='myaccount', account_key='mykey')
-    #block_blob_service = BlockBlobService(url=blobContainerSasUri)
-    #block_blob_service.create_container(blobContainerSasUri)
+#block_blob_service = BlockBlobService(account_name='myaccount', account_key='mykey')
+#block_blob_service = BlockBlobService(url=blobContainerSasUri)
+#block_blob_service.create_container(blobContainerSasUri)
 
-    # block_blob_service.create_blob_from_path(
-    # 'mycontainer','myblockblob','sunset.png',
-    # content_settings=ContentSettings(content_type='image/jpg')
-    # )
+# block_blob_service.create_blob_from_path(
+# 'mycontainer','myblockblob','sunset.png',
+# content_settings=ContentSettings(content_type='image/jpg')
+# )
 
-    # block_blob_service.create_blob_from_bytes(
-    #     ,
-    #     content_settings=ContentSettings(content_type='image/jpg')
-    # )
+# block_blob_service.create_blob_from_bytes(
+#     ,
+#     content_settings=ContentSettings(content_type='image/jpg')
+# )
 
 
-#MQTT Client    
+#MQTT Client
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+ str(rc))
-    #client.connected_flag = True
-    #Subscribing in on_connect() means that if we lose the connection and
-    #reconnect then subscriptions will be renewed.
+#client.connected_flag = True
+#Subscribing in on_connect() means that if we lose the connection and
+#reconnect then subscriptions will be renewed.
 
 def on_subscribe(client, userdata, mid, gqos):
     print("subscribed: "+ str(mid) + str(gqos))
@@ -334,25 +337,25 @@ def on_message(client, userdata, msg):
         groupTag = jsonPayload['Payload']['GroupTag']
         #line_bot_api.push_message(userID, TextSendMessage(text='收到公告'))
         line_bot_api.push_message(userID, TextSendMessage(text='請輸入教室密碼(PINCode)'))
-        
+    
     elif action == 'BindingSuccess':
         print('BindingSuccess')
         global didBinded
-        didBinded = True     
+        didBinded = True
         line_bot_api.push_message(userID, TextSendMessage(text='已登錄教室'))
-        sendMqttRequestForTagUpdate()                      
+        sendMqttRequestForTagUpdate()
         sendMqttRegistSuccess(True)
 
-    elif action =="BindingFail" :  
+    elif action =="BindingFail" :
         print('BindingFail')
-        line_bot_api.push_message(userID, TextSendMessage(text='登錄教室失敗'))     
+        line_bot_api.push_message(userID, TextSendMessage(text='登錄教室失敗'))
         sendMqttRegistSuccess(False)
-        
+
     elif action == 'Message':
-        receiveMessage = jsonPayload['Payload']['Text']
+        eceiveMessage = jsonPayload['Payload']['Text']
         m = 'Teacher:' + receiveMessage
         line_bot_api.push_message(userID, TextSendMessage(text=receiveMessage))
-    
+
     elif action == 'State':
         #irs = bool
         irs = jsonPayload['Payload']['IRS']
@@ -374,13 +377,13 @@ def on_message(client, userdata, msg):
                             ]
                         )
             )
-            line_bot_api.push_message(userID,buttons_template)
+        line_bot_api.push_message(userID,buttons_template)
 
 
     elif action == 'GroupClose':
         print('GroupClose')
         line_bot_api.push_message(userID, TextSendMessage(text='活動結束 教室關閉'))
-        
+
 def on_log(client, userdata, level, buf):
     print("Log:",buf)
 
@@ -391,14 +394,14 @@ def on_disconnect(client, userdata, rc):
 def on_publish(client, userdata, mid):
     print('on_publish')
     #print(userdata)
-    
-    
+
+
 def mqttConnect(publishPayload='',binding=''):
     global client
-
+    
     #client = mqtt.Client(client_id=MQTTclientID)
     #mqtt.Client.connected_flag = False
-        
+    
     client.on_connect = on_connect
     client.on_message = on_message
     client.on_subscribe = on_subscribe
@@ -415,84 +418,77 @@ def mqttConnect(publishPayload='',binding=''):
 
 @app.route('/gg', methods=['GET'])
 def test():
-    return "Hello World!"
+    return "GG WP!"
 
-#ImageMessage
-@handler.add(MessageEvent, message=ImageMessage)
+
+@handler.add(MessageEvent, message=StickerMessage)
 def handle_message(event): 
-    #Headers  {"Authorization": "Bearer TOKEN"}
-    #https://api.line.me/v2/bot/message/messageID/content
-    # {
-    # "message": {"id": "6859506981311", "type": "image"}, 
-    # "replyToken": "1e6f916e980242a5bd9c226091f41743", 
-    # "source": {"type": "user", "userId": "Uad72fbe41f62feb98af3893993e87f8c"}, 
-    # "timestamp": 1508323371467, 
-    # "type": "message"
-    # }
-    #line_bot_api.reply_message(event.reply_token,TextSendMessage(text=str(event)))
-    msgID = event.message.id
+    sticker_message = StickerSendMessage(
+        package_id = event.message.package_id,
+        sticker_id = event.message.sticker_id
+    )
+    line_bot_api.push_message(userID, sticker_message)
 
-    url = "https://api.line.me/v2/bot/message/{}/content".format('6859506981311')
-    headers = {
-    'Authorization': 'Bearer wrQQUNqGLPRjzOmYj3Zw/vX2pntyFR+5ZU4r/9PhbtHLbyX8l0wsqkSimSDGPY2QtHguKJPOSPB3g9ExPW5lspInigwsRaoJl0p1RoEn3zLH4HcAiP9R807uTXt/oSsz2xKtF1VmHqMzDVH3Nm4jYwdB04t89/1O/w1cDnyilFU='
-    }
-    response = requests.request("GET", url, headers=headers)
-
-    #print(response.content)
-    imageLoad = Image.open(BytesIO(response.content))
-    #imageLoad = imageLoad.resize((80, 80), Image.ANTIALIAS)
-    #im_temp.save("ArtWrk.ppm", "ppm")
-
-    line_bot_api.reply_message(event.reply_token,TextSendMessage(text=str(event)))  
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     global userID
-   
+    #line_bot_api.reply_message(event.reply_token,TextSendMessage(text=event.message.text))
+
+    line_bot_api.push_message(event.source.user_id, TextSendMessage(text=event.message.text))
+
     msg = event.message.text
     userID = event.source.user_id
     #if event.source.group_id is not None:
     #    groupID = event.source.group_id
     global didBinded
     global client
+
+    if msg == '狀態':
+        global memberName
+        if didBinded:
+            line_bot_api.push_message(userID, TextSendMessage(text=memberName + ' 連線中'))
+        else:
+            line_bot_api.push_message(userID, TextSendMessage(text='尚未連線'))
+
     if msg == '離開':
         didBinded = False
-        client.disconnect()
+        client.disconnect
+
+    if msg == '你好' or msg == '嗨':
+        menulist = '輸入\n[連線+教室代碼] \n建立連線\nex. \n連線100000 \n連線200000'
+        #line_bot_api.reply_message(event.reply_token,TextSendMessage(text=menulist))
+        line_bot_api.push_message(userID, TextSendMessage(text=menulist))
         
+    if msg[0] == '連' and msg[1] == '線':
+        global groupNum
+        groupNum = msg.split('線')[1]
+        g = regist()
+        #line_bot_api.reply_message(event.reply_token,TextSendMessage(text=g))
+        line_bot_api.push_message(userID, TextSendMessage(text=g))
         
-    if not didBinded:
+    if msg[0] == 'p':
+        pin = msg.split('p')[1]
+        line_bot_api.push_message(userID, TextSendMessage(text=pin))
+        pinCodeCheck(pin)
+        
+    if msg[0] == '選':
+        indexPath = int(msg.split('選')[1]) - 1
+        bindingMember(indexPath)
 
-        if msg == '你好' or msg == '嗨':
-            menulist = '輸入\n[連線+教室代碼] \n建立連線\nex. \n連線100000 \n連線200000'
-            #line_bot_api.reply_message(event.reply_token,TextSendMessage(text=menulist))
-            line_bot_api.push_message(userID, TextSendMessage(text=menulist))
+    if didBinded:
 
-        if msg[0] == '連' and msg[1] == '線':
-            global groupNum
-            groupNum = msg.split('線')[1]
-            g = regist()
-            #line_bot_api.reply_message(event.reply_token,TextSendMessage(text=g))
-            line_bot_api.push_message(userID, TextSendMessage(text=g))
-
-        if msg[0] == 'p':
-            pin = msg.split('p')[1]
-            line_bot_api.push_message(userID, TextSendMessage(text=pin))
-            pinCodeCheck(pin)
-
-        if msg[0] == '選':
-            indexPath = int(msg.split('選')[1]) - 1
-            bindingMember(indexPath)
-
-    else:
         if msg[0] == 'i' :
             irsStr = msg.split('i')[1]
             sendIRS(irsStr)
             line_bot_api.push_message(userID, TextSendMessage(text='IRS已送: ' + irsStr))
+
         elif msg[0] == 'I':
             irsStr = msg.split('I')[1]
             sendIRS(irsStr)
             line_bot_api.push_message(userID, TextSendMessage(text='IRS已送: ' + irsStr))
-        else:    
+
+        else:
             sendMessage(msg)
             line_bot_api.push_message(userID, TextSendMessage(text='訊息已送:' + msg))
 
