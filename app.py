@@ -24,7 +24,7 @@ from linebot.models import *
 
 app = Flask(__name__)
 token = 'wrQQUNqGLPRjzOmYj3Zw/vX2pntyFR+5ZU4r/9PhbtHLbyX8l0wsqkSimSDGPY2QtHguKJPOSPB3g9ExPW5lspInigwsRaoJl0p1RoEn3zLH4HcAiP9R807uTXt/oSsz2xKtF1VmHqMzDVH3Nm4jYwdB04t89/1O/w1cDnyilFU='
-line_bot_api = LineBotApi('wrQQUNqGLPRjzOmYj3Zw/vX2pntyFR+5ZU4r/9PhbtHLbyX8l0wsqkSimSDGPY2QtHguKJPOSPB3g9ExPW5lspInigwsRaoJl0p1RoEn3zLH4HcAiP9R807uTXt/oSsz2xKtF1VmHqMzDVH3Nm4jYwdB04t89/1O/w1cDnyilFU=')
+line_bot_api = LineBotApi(token)
 handler = WebhookHandler('4cd06a614a651ea406999c50f07c13ca')
 
 @app.route('/', methods=['GET'])
@@ -162,8 +162,10 @@ def joinGroup(token):
 def pinCodeCheck(pinCodeEntry):
     
     if pinCodeEntry == '80650390' or pinCodeEntry == pinCode :
-        selectStudent(memberList)
         line_bot_api.push_message(userID, TextSendMessage(text='驗證成功'))
+        global memberList
+        selectStudent(memberList)
+        
     else:
         line_bot_api.push_message(userID, TextSendMessage(text='驗證失敗'))
 
