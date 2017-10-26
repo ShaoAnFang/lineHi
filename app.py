@@ -465,7 +465,7 @@ def handle_message(event):
         
     if msg[0] == 'p':
         pin = msg.split('p')[1]
-        line_bot_api.push_message(userID, TextSendMessage(text=pin))
+        #line_bot_api.push_message(userID, TextSendMessage(text=pin))
         pinCodeCheck(pin)
         
     if msg[0] == '選':
