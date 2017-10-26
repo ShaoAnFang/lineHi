@@ -433,10 +433,6 @@ def handle_message(event):
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     global userID
-    #line_bot_api.reply_message(event.reply_token,TextSendMessage(text=event.message.text))
-
-    line_bot_api.push_message(event.source.user_id, TextSendMessage(text=event.message.text))
-
     msg = event.message.text
     userID = event.source.user_id
     #if event.source.group_id is not None:
