@@ -451,7 +451,7 @@ def handle_message(event):
 
     if msg == '離開':
         didBinded = False
-        client.disconnect
+        client.disconnect()
 
     if msg == '你好' or msg == '嗨':
         menulist = '輸入\n[連線+教室代碼] \n建立連線\nex. \n連線100000 \n連線200000'
