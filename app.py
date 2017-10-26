@@ -338,7 +338,7 @@ def on_message(client, userdata, msg):
         groupName = jsonPayload['Payload']['GroupName']
         groupTag = jsonPayload['Payload']['GroupTag']
         #line_bot_api.push_message(userID, TextSendMessage(text='收到公告'))
-        line_bot_api.push_message(userID, TextSendMessage(text='請輸入教室密碼(PINCode)'))
+        line_bot_api.push_message(userID, TextSendMessage(text='請輸入教室密碼(PINCode) \n ex.p1234 \n p5678'))
     
     elif action == 'BindingSuccess':
         print('BindingSuccess')
